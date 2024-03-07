@@ -1,18 +1,66 @@
 #include <Arduino.h>
+int NUM = 0;
+int time = 0;
 
-// put function declarations here:
-int myFunction(int, int);
+void right(int time)
+{
+    int NUM = (200);
+    analogWrite(6, 201);
+    digitalWrite(9, HIGH);
+    digitalWrite(10, LOW);
+    analogWrite(5, 252);
+    digitalWrite(7, LOW);
+    digitalWrite(11, HIGH);
+    delay(time);
+}
+void left(int time)
+{
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    int NUM = (150);
+    analogWrite(6, 188);
+    digitalWrite(9, HIGH);
+    digitalWrite(10, LOW);
+    analogWrite(5, 86);
+    digitalWrite(7, LOW);
+    digitalWrite(11, HIGH);
+    delay(time);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void forward(int time)
+{
+    int NUM = (255);
+    analogWrite(6, 254);
+    digitalWrite(9, HIGH);
+    digitalWrite(10, LOW);
+    analogWrite(5, 255);
+    digitalWrite(7, LOW);
+    digitalWrite(11, HIGH);
+    delay(time);
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void stop(int time)
+{
+    int NUM = (150);
+    analogWrite(6, 0);
+    analogWrite(5, 0);
+    delay(time);
+}
+
+void setup()
+{
+    Serial.begin(9600);
+    pinMode(6, OUTPUT);
+    pinMode(10, OUTPUT);
+    pinMode(9, OUTPUT);
+    pinMode(5, OUTPUT);
+    pinMode(11, OUTPUT);
+    pinMode(7, OUTPUT);
+}
+void loop()
+{
+
+    forward(3000);
+    right(2000);
+    left(2000);
+    stop(3000);
 }
