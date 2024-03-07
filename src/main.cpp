@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #define IRSIZE 5
+#define DELAY 20
+#define posConst 1000
 
 // Right Motor
 const int ENA = 6;
@@ -21,6 +23,7 @@ const int base_speed = 175;
 const int kd = 4, kp = 4;
 const int base_position = 2000;
 
+void ReadSensor();
 void CalculateError();
 void CalculatePreviousError();
 void CalculateCorrection();
@@ -40,15 +43,28 @@ void loop()
 {
 }
 
+void ReadSensor()
+{
+    IRsensor[0] = digitalRead(A0);
+    IRsensor[1] = digitalRead(A1);
+    IRsensor[2] = digitalRead(A2);
+    IRsensor[3] = digitalRead(A3);
+    IRsensor[4] = digitalRead(A4);
+}
+
 void CalculateError()
 {
+    position = 0;
     int SUM = 0;
 
     for (int i = 0; i < IRSIZE; i++)
-        position += i * 1000 * IRsensor[i];
+        position += i * posConst * IRsensor[i];
 
     for (int i = 0; i < IRSIZE; i++)
         SUM += IRsensor[i];
+
+    if (SUM == 0)
+        return;
 
     position /= SUM;
 
@@ -78,5 +94,5 @@ void SetEngineSpeed()
     digitalWrite(IN3, LOW);
     digitalWrite(IN4, HIGH);
 
-    delay(20);
+    delay(DELAY);
 }
