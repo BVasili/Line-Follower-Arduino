@@ -1,23 +1,30 @@
 #include <Arduino.h>
+#define IRSIZE 5
 
 // Right Motor
-int ENA = 6;
-int IN1 = 10;
-int IN2 = 9;
+const int ENA = 6;
+const int IN1 = 10;
+const int IN2 = 9;
 
 // Left Motor
-int ENB = 5;
-int IN3 = 11;
-int IN4 = 7;
+const int ENB = 5;
+const int IN3 = 11;
+const int IN4 = 7;
 
 // PD Control
 int error, previous_error;
-int kd, kp;
-int IRsensors[5];
+int IRsensor[5];
 int position;
-const int base =2000;
+int correction;
+int RM_Speed, LM_Speed;
+const int base_speed = 175;
+const int kd = 4, kp = 4;
+const int base_position = 2000;
 
-void calculateError();
+void CalculateError();
+void CalculatePreviousError();
+void CalculateCorrection();
+void SetEngineSpeed();
 
 void setup()
 {
@@ -33,8 +40,43 @@ void loop()
 {
 }
 
-void calculateError()
+void CalculateError()
 {
-    position = (0*IRsensors[0]+1000*IRsensors[1]+2000*IRsensors[2]+3000*IRsensors[4]+4000*IRsensors[4]);
-    position /= (IRsensors[0]+IRsensors[1]+IRsensors[2]+IRsensors[3]+IRsensors[4]);
+    int SUM = 0;
+
+    for (int i = 0; i < IRSIZE; i++)
+        position += i * 1000 * IRsensor[i];
+
+    for (int i = 0; i < IRSIZE; i++)
+        SUM += IRsensor[i];
+
+    position /= SUM;
+
+    error = base_position - position;
+}
+
+void CalculatePreviousError()
+{
+    previous_error = error;
+}
+
+void CalculateCorrection()
+{
+    correction = kp * error + kd * (error - previous_error);
+}
+
+void SetEngineSpeed()
+{
+    RM_Speed = base_speed + correction;
+    LM_Speed = base_speed - correction;
+
+    analogWrite(ENA, RM_Speed);
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
+
+    analogWrite(ENB, LM_Speed);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+
+    delay(20);
 }
