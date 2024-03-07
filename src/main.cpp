@@ -52,7 +52,7 @@ void CalculateError()
 
     position /= SUM;
 
-    error = base_position - position;
+    error = position - base_position;
 }
 
 void CalculatePreviousError()
