@@ -4,14 +4,14 @@
 #define posConst 1000
 
 // Right Motor
-const int ENA = 6;
-const int IN1 = 10;
-const int IN2 = 9;
+const int SR = 6;
+const int RF = 10;
+const int RB = 9;
 
 // Left Motor
-const int ENB = 5;
-const int IN3 = 11;
-const int IN4 = 7;
+const int SL = 5;
+const int LF = 11;
+const int LB = 7;
 
 // PD Control
 int error, previous_error;
@@ -28,16 +28,18 @@ void CalculateError();
 void CalculatePreviousError();
 void CalculateCorrection();
 void SetEngineSpeed();
+bool isOnBlack();
+bool isOnWhite();
 
 void setup()
 {
     Serial.begin(9600);
-    pinMode(ENA, OUTPUT);
-    pinMode(IN1, OUTPUT);
-    pinMode(IN2, OUTPUT);
-    pinMode(ENB, OUTPUT);
-    pinMode(IN3, OUTPUT);
-    pinMode(IN4, OUTPUT);
+    pinMode(SR, OUTPUT);
+    pinMode(RF, OUTPUT);
+    pinMode(RB, OUTPUT);
+    pinMode(SL, OUTPUT);
+    pinMode(LF, OUTPUT);
+    pinMode(LB, OUTPUT);
 }
 void loop()
 {
@@ -86,13 +88,13 @@ void SetEngineSpeed()
     RM_Speed = base_speed + correction;
     LM_Speed = base_speed - correction;
 
-    analogWrite(ENA, RM_Speed);
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
+    analogWrite(SR, RM_Speed);
+    digitalWrite(RF, HIGH);
+    digitalWrite(RB, LOW);
 
-    analogWrite(ENB, LM_Speed);
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
+    analogWrite(SL, LM_Speed);
+    digitalWrite(LF, LOW);
+    digitalWrite(LB, HIGH);
 
     delay(DELAY);
 }
